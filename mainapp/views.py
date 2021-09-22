@@ -5,6 +5,7 @@ from mainapp.models import Product
 
 # Create your views here.
 
+
 MODULE_DIR = os.path.dirname(__file__)
 
 
@@ -19,6 +20,7 @@ def index(request):
 
 
 def products(request):
+
     db_products_download = False
     if db_products_download:
         file_path = os.path.join(MODULE_DIR, 'fixtures/products_content.json')
@@ -36,6 +38,7 @@ def products(request):
         'title': 'GeekShop - Каталог',
         'now_date': False,
         'products': Product.objects.all(),
+
 
     }
     return render(request, 'mainapp/products.html', context)
