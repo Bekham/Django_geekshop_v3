@@ -17,8 +17,7 @@
     <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
     {% block css %}
-    <!-- Custom styles for this template -->
-{#    <link href="/static/css/products.css" rel="stylesheet">#}
+
     {% endblock %}
 
 </head>
@@ -45,13 +44,12 @@
                     <a class="nav-link" href="{% url 'products:index' %}">Каталог</a>
 
 
-
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#"><i class="fas fa-shopping-bag"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="auth/login.html">Войти <i class="fas fa-sign-in-alt"></i></a>
+                    <a class="nav-link" href="{% url 'users:login' %}">Вооойти <i class="fas fa-sign-in-alt"></i></a>
                 </li>
             </ul>
         </div>
