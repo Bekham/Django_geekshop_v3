@@ -17,8 +17,7 @@
     <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
     {% block css %}
-    <!-- Custom styles for this template -->
-{#    <link href="/static/css/products.css" rel="stylesheet">#}
+
     {% endblock %}
 
 </head>
@@ -30,9 +29,9 @@
     <div class="container">
         <a class="navbar-brand" href="{% url 'index' %}">
             GeekShop
-            {% if now_date %}
-                {% now "d M Y" %}
-            {% endif %}
+{#            {% if now_date %}#}
+{#                {% now "d M Y" %}#}
+{#            {% endif %}#}
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
                 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,14 +44,16 @@
                     <a class="nav-link" href="{% url 'products:index' %}">Каталог</a>
 
 
-
                 </li>
+               {% if not user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-shopping-bag"></i></a>
+                    <a class="nav-link" href="{% url 'users:login' %}">Войти <i class="fas fa-sign-in-alt"></i></a>
                 </li>
+                {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="auth/login.html">Войти <i class="fas fa-sign-in-alt"></i></a>
+                    <a class="nav-link" href="{% url 'users:logout' %}">Выйти <i class="fas fa-sign-out-alt"></i></a>
                 </li>
+                {% endif %}
             </ul>
         </div>
     </div>
