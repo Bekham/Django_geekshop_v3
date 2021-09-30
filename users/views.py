@@ -1,7 +1,11 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
-from django.contrib import auth
-from users.forms import UserLoginForm, UserRegisterForm
+from django.contrib import auth, messages
+
+from baskets.models import Basket
+from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+
+
 # Create your views here.
 
 
@@ -15,8 +19,6 @@ def login(request):
             if user.is_active:
                 auth.login(request, user)
                 return HttpResponseRedirect(reverse('index'))
-        else:
-            print(form.errors)
     else:
         form = UserLoginForm()
     context = {
@@ -30,12 +32,11 @@ def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST, request.FILES)
         if form.is_valid():
-            if 'image' in request.FILES:
+            if request.FILES:
                 form.image = request.FILES['image']
             form.save()
+            messages.success(request, 'Вы успешно зарагестрировались!')
             return HttpResponseRedirect(reverse('users:login'))
-        else:
-            print(form.errors)
     else:
         form = UserRegisterForm()
     context = {
@@ -45,6 +46,29 @@ def register(request):
 
     }
     return render(request, 'users/register.html', context)
+
+
+def profile(request):
+    if request.method == 'POST':
+        form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user, )
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Изменения успешно сохранены!')
+            return HttpResponseRedirect(reverse('users:profile'))
+        # else:
+        #     print(form.errors)
+    total_sum = 0
+    baskets = Basket.objects.filter(user=request.user)
+    for basket in baskets:
+        total_sum += basket.sum()
+    context = {
+        'title': 'Geekshop-Профайл',
+        'form': UserProfileForm(instance=request.user),
+        'baskets': Basket.objects.filter(user=request.user),
+        'total_sum': total_sum,
+        'count': Basket.objects.count()
+    }
+    return render(request, 'users/profile.html', context)
 
 
 def logout(request):

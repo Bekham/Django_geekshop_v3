@@ -2,6 +2,8 @@ from django.shortcuts import render
 import os
 import json
 from mainapp.models import Product
+from django.contrib.auth.decorators import login_required
+from users.models import User
 
 # Create your views here.
 
@@ -14,11 +16,13 @@ def index(request):
         'title': 'GeekShop',
         'head': 'GeekShop Store',
         'now_date': True,
+        # 'user': User.username,
 
     }
     return render(request, 'mainapp/index.html', context)
 
 
+@login_required
 def products(request):
 
     db_products_download = False
@@ -38,6 +42,7 @@ def products(request):
         'title': 'GeekShop - Каталог',
         'now_date': False,
         'products': Product.objects.all(),
+
 
 
     }
