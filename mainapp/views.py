@@ -1,9 +1,12 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 import os
 import json
+from django.template.loader import render_to_string
 from mainapp.models import Product
 from django.contrib.auth.decorators import login_required
-from users.models import User
+from baskets.views import basket_add, basket_remove
+from baskets.models import Basket
 
 # Create your views here.
 
@@ -24,26 +27,33 @@ def index(request):
 
 @login_required
 def products(request):
-
-    db_products_download = False
-    if db_products_download:
-        file_path = os.path.join(MODULE_DIR, 'fixtures/products_content.json')
-        products_content = json.load(open(file_path, encoding='utf-8'))
-        for product in products_content:
-            add_product = Product(name=product['name'],
-                                  image=product['image'],
-                                  description=product['description'],
-                                  price=product['price'],
-                                  quantity=10,
-                                  category_id=int(product['category']))
-            add_product.save()
+    _products = Product.objects.all()
 
     context = {
         'title': 'GeekShop - Каталог',
         'now_date': False,
-        'products': Product.objects.all(),
-
-
-
+        'products': _products,
+        'baskets': Basket.objects.filter(user=request.user).values('product_id'),
     }
+    print(context['baskets'])
     return render(request, 'mainapp/products.html', context)
+
+
+@login_required
+def product_add(request, product_id, wtd):
+    if request.is_ajax():
+        if wtd == 'Отправить в корзину':
+            basket_add(request, product_id=product_id)
+        elif wtd == 'Удалить из корзины':
+            # basket_add(request, product_id=product_id)
+            basket_remove(request, product_id=product_id)
+        context = {
+            'title': 'GeekShop - Каталог',
+            'products': Product.objects.all(),
+            'baskets': Basket.objects.filter(user=request.user).values('product_id'),
+        }
+
+        result = render_to_string('mainapp/goods.html', context)
+        return JsonResponse({'result': result})
+
+
