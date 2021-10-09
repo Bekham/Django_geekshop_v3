@@ -53,6 +53,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admins:index' %}">User
+                            <i class="fas fa-user-cog"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'users:logout' %}">Выйти <i
                                 class="fas fa-sign-out-alt"></i></a>
                     </li>
@@ -77,8 +82,12 @@
 
 <!-- FontAwesome script -->
 <script src="{% static 'vendor/fontawesome/fontawesome-icons.js' %}" crossorigin="anonymous"></script>
-<script src="{% static 'js/baskets.js' %}" crossorigin="anonymous"></script>
-<script src="{% static 'js/product_add.js' %}" crossorigin="anonymous"></script>
+{#<script src="{% static 'js/baskets.js' %}" ></script>#}
+{% block baskets %}
+{% endblock %}
+{% block product_add %}
+{% endblock %}
+{#<script src="{% static 'js/product_add.js' %}" ></script>#}
 </body>
 
 </html>

@@ -1,4 +1,5 @@
 <div class="product_add">
+{#<div class="list-group">#}
     <div class="row">
 
         {% for product in products %}
@@ -21,6 +22,7 @@
                     </div>
                     <div class="card-footer text-center">
                         <input type="button" name="{{ product.id }}"
+{#                               id="{{ current_category }}"#}
 
                                 {% for basket in baskets %}
                                     {% if product.id == basket.product_id %}
@@ -39,4 +41,5 @@
 
         {% endfor %}
     </div>
+{#</div>#}
 </div>
