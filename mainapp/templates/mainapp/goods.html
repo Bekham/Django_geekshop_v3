@@ -1,8 +1,9 @@
+{#<div class="list_update">#}
 <div class="product_add">
-{#<div class="list-group">#}
+    {#<div class="list-group">#}
     <div class="row">
 
-        {% for product in products %}
+        {% for product in object_list %}
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100">
                     <a href="#">
@@ -21,16 +22,18 @@
                         </p>
                     </div>
                     <div class="card-footer text-center">
-                        <input type="button" name="{{ product.id }}"
-{#                               id="{{ current_category }}"#}
+                        <input type="button"
+                               name="{{ product.id }}"
 
-                                {% for basket in baskets %}
-                                    {% if product.id == basket.product_id %}
+
+                                {% for basket in baskets_product_id %}
+                                    {% ifequal product.id basket.product_id %}
                                value="Удалить из корзины"
                                class="btn btn-outline-danger"
-                                    {% endif %}
+                                    {% endifequal %}
                                 {% endfor %}
                                 {% if not value %}
+                               id="{{ basket.product_id }}"
                                value="Отправить в корзину"
                                class="btn btn-outline-success"
                                 {% endif %}
@@ -41,5 +44,8 @@
 
         {% endfor %}
     </div>
-{#</div>#}
+
+    {#</div>#}
 </div>
+
+{#</div>#}

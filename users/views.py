@@ -53,7 +53,8 @@ class RegisterListView(FormView, BaseClassContextMixin):
             form.save()
             messages.success(request, 'Вы успешно зарегистрировались')
             return redirect(self.success_url)
-        return redirect(self.success_url)
+
+        return redirect(reverse_lazy('users:register'))
 
 
 # def register(request):
