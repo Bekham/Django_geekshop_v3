@@ -1,5 +1,5 @@
 from django import forms
-from mainapp.models import ProductCategory
+from mainapp.models import ProductCategory, Product
 from users.forms import UserRegisterForm, UserProfileForm
 from users.models import User
 
@@ -62,6 +62,39 @@ class CategoryAdminProfileForm(forms.ModelForm):
         self.fields['description'].widget.attrs['placeholder'] = 'Описание'
         for field_name, field in self.fields.items():
             if field_name == 'is_active':
+                field.widget.attrs['class'] = 'form'
+            else:
+                field.widget.attrs['class'] = 'form-control py-4'
+
+
+class ProductsAdminCreateForm(forms.ModelForm):
+    # image = forms.ImageField(widget=forms.FileInput(), required=False)
+
+    class Meta:
+        model = Product
+        fields = ('name', 'image', 'short_desc', 'description', 'price', 'quantity', 'image', 'category')
+
+    def __init__(self, *args, **kwargs):
+        super(ProductsAdminCreateForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field_name == 'image' or field_name == 'category' or field_name == 'price' or field_name == 'quantity':
+                field.widget.attrs['class'] = 'form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control py-4'
+
+
+class ProductsAdminProfileForm(forms.ModelForm):
+    image = forms.ImageField(widget=forms.FileInput(), required=False)
+    class Meta:
+        model = Product
+        fields = ('name', 'image', 'short_desc', 'description', 'price', 'quantity', 'image', 'category', 'is_active')
+
+    def __init__(self, *args, **kwargs):
+        super(ProductsAdminProfileForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field_name == 'image' or field_name == 'category' or field_name == 'price' or field_name == 'quantity':
+                field.widget.attrs['class'] = 'form-control'
+            elif field_name == 'is_active':
                 field.widget.attrs['class'] = 'form'
             else:
                 field.widget.attrs['class'] = 'form-control py-4'

@@ -1,18 +1,26 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from admins.forms import UserAdminRegisterForm, UserAdminProfileForm, CategoryAdminRegisterForm, \
-    CategoryAdminProfileForm
+    CategoryAdminProfileForm, ProductsAdminCreateForm, ProductsAdminProfileForm
 from geekshop.mixin import CustomDispatchMixin
-from mainapp.models import ProductCategory
+from mainapp.models import ProductCategory, Product
 from users.models import User
 from django.shortcuts import render
 
 # Create your views here.
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
 
 
-def index(request):
-    return render(request, 'admins/admin.html')
+class AdminsListView(TemplateView):
+    # title = 'GeekShop'
+    template_name = 'admins/admin.html'
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(IndexView, self).get_context_data(**kwargs)
+    #
+    #     return context
+# def index(request):
+#     return render(request, 'admins/admin.html')
 
 
 class UserListView(ListView, CustomDispatchMixin):
@@ -108,4 +116,53 @@ class CategoryDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.delete()
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class ProductsListView(ListView, CustomDispatchMixin):
+    model = Product
+    template_name = 'admins/admin-product-read.html'
+    context_object_name = 'products'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(ProductsListView, self).get_context_data(**kwargs)
+        context['title'] = 'Админка | Продукты'
+        context['categories'] = ProductCategory.objects.all()
+        return context
+
+
+class ProductsCreateView(CreateView, CustomDispatchMixin):
+    model = Product
+    template_name = 'admins/admin-product-create.html'
+    form_class = ProductsAdminCreateForm
+    success_url = reverse_lazy('admins:admins_products')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(ProductsCreateView, self).get_context_data(**kwargs)
+        context['title'] = 'Админка | Создание продукта'
+        return context
+
+
+class ProductsUpdateView(UpdateView, CustomDispatchMixin):
+    model = Product
+    template_name = 'admins/admin-product-update-delete.html'
+    form_class = ProductsAdminProfileForm
+    success_url = reverse_lazy('admins:admins_products')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(ProductsUpdateView, self).get_context_data(**kwargs)
+        context['title'] = 'Админка | Обновление пользователя'
+        return context
+
+
+class ProductsDeleteView(DeleteView):
+    model = Product
+    template_name = 'admins/admin-product-read.html'
+    success_url = reverse_lazy('admins:admins_products')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        # self.object.is_active = False
+        # self.object.save()
         return HttpResponseRedirect(self.get_success_url())
