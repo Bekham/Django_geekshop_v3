@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.contrib.auth.views import LoginView, LogoutView
+from django.core.mail import send_mail
 from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.contrib import auth, messages
@@ -9,7 +11,6 @@ from baskets.models import Basket
 from geekshop.mixin import BaseClassContextMixin, UserDispatchMixin
 from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 
-
 # Create your views here.
 from users.models import User
 
@@ -19,6 +20,7 @@ class LoginListView(LoginView, BaseClassContextMixin):
     form_class = UserLoginForm
     title = 'Geekshop - Авторизация'
     # success_url = reverse_lazy('index')
+
 
 # def login(request):
 #     if request.method == 'POST':
@@ -50,11 +52,15 @@ class RegisterListView(FormView, BaseClassContextMixin):
     def post(self, request, *args, **kwargs):
         form = self.form_class(data=request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Вы успешно зарегистрировались')
+            user = form.save()
+            if send_verify_link(user):
+                messages.success(request, 'Вы успешно зарегистрировались')
             return redirect(self.success_url)
-
-        return redirect(reverse_lazy('users:register'))
+        print(form.error_messages)
+        # print(form.password1)
+        # print(form.password2)
+        return render(request, 'users/register.html', {'form': form})
+        # return redirect(self.success_url)
 
 
 # def register(request):
@@ -99,6 +105,7 @@ class ProfileFormView(UpdateView, BaseClassContextMixin, UserDispatchMixin):
             return redirect(self.success_url)
         return redirect(self.success_url)
 
+
 # @login_required
 # def profile(request):
 #     if request.method == 'POST':
@@ -117,6 +124,30 @@ class ProfileFormView(UpdateView, BaseClassContextMixin, UserDispatchMixin):
 
 class Logout(LogoutView):
     template_name = 'mainapp/index.html'
+
+
 # def logout(request):
 #     auth.logout(request)
 #     return HttpResponseRedirect(reverse('index'))
+
+
+def send_verify_link(user):
+    verify_link = reverse('users:verify', args=[user.email, user.activation_key])
+    subject = f'Для активации учетной записи {user.username} пройдите по ссылке'
+    message = f'Для подтверждения учетной записи {user.username} на портале \n {settings.DOMAIN_NAME}{verify_link}'
+    return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+
+
+def verify(request, email, activation_key):
+    try:
+        user = User.objects.get(email=email)
+        if user and user.activation_key == activation_key and not user.is_activation_key_expired():
+            user.activation_key = ''
+            user.activation_key_created = None
+            user.is_active = True
+            user.save()
+            auth.login(request, user)
+        return render(request, 'users/verification.html')
+    except Exception as e:
+        print(e)
+        return HttpResponseRedirect(reverse('index'))
