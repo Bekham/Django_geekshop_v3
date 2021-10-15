@@ -33,7 +33,7 @@
                             {{ category }}</a>
                     {% endfor %}
                 </div>
-                {#                {% include 'mainapp/category.html' %}#}
+
 
             </div>
             <!-- /.col-lg-3 -->
@@ -69,42 +69,42 @@
                         <span class="sr-only">Next</span>
                     </a>
                 </div>
-                {% include 'mainapp/goods.html' %}
+                {% include 'mainapp/../include/goods.html' %}
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
-                        <li class="page-item {% if not object_list.has_previous %}disabled{% endif %}">
-{#                                                    <input type="button" class="page-link" value="Previous"#}
-{#                                                           name="current_category"#}
-{#                            id="{% if object_list.has_previous %}{{object_list.previous_page_number}}{% else %}0{% endif %}/{{current_category}}/"/>#}
+                        <li class="page-item {% if not products.has_previous %}disabled{% endif %}">
+                            {#                                                    <input type="button" class="page-link" value="Previous"#}
+                            {#                                                           name="current_category"#}
+                            {#                            id="{% if object_list.has_previous %}{{object_list.previous_page_number}}{% else %}0{% endif %}/{{current_category}}/"/>#}
                             <a class="page-link"
                                href="
-{% if object_list.has_previous %}
-{% url 'products:page' object_list.previous_page_number current_category %}
+{% if products.has_previous %}
+{% url 'products:page' products.previous_page_number current_category %}
 {% else %} # {% endif %} "
                                tabindex="-1"
                                aria-disabled="true">Previous</a>
                         </li>
-                        {% for page in object_list.paginator.page_range %}
+                        {% for page in products.paginator.page_range %}
                             <li class="page-item">
-{#                                                            <input type="button" class="page-link" value="{{ page }}"#}
-{#                                                               name="{{ page }}"#}
-{#                                                        id="{{ page }}/{{ current_category }}/"#}
-{#                                                            {% ifequal page object_list.number %}#}
-{#                                                                                     style="font-weight:bold" {% endifequal %}/>#}
+                                {#                                                            <input type="button" class="page-link" value="{{ page }}"#}
+                                {#                                                               name="{{ page }}"#}
+                                {#                                                        id="{{ page }}/{{ current_category }}/"#}
+                                {#                                                            {% ifequal page object_list.number %}#}
+                                {#                                                                                     style="font-weight:bold" {% endifequal %}/>#}
                                 <a class="page-link" id="{{ page }}"
-                                        {% ifequal page object_list.number %}
+                                        {% ifequal page products.number %}
                                    style="font-weight:bold" {% endifequal %}
                                    href="{% url 'products:page' page current_category %}">{{ page }}</a>
                             </li>
                         {% endfor %}
 
-                        <li class="page-item {% if not object_list.has_next %}disabled {% endif %}">
-{#                                                    <input type="button" class="page-link" value="Next"#}
-{#                                                           name="current_category"#}
-{#                                                    id="{% if object_list.has_next %}{{ object_list.next_page_number }}{% else %}0{% endif %}/{{ current_category }}/"/>#}
+                        <li class="page-item {% if not products.has_next %}disabled {% endif %}">
+                            {#                                                    <input type="button" class="page-link" value="Next"#}
+                            {#                                                           name="current_category"#}
+                            {#                                                    id="{% if object_list.has_next %}{{ object_list.next_page_number }}{% else %}0{% endif %}/{{ current_category }}/"/>#}
                             <a class="page-link" id="Next"
-                               href="{% if object_list.has_next %}
-{% url 'products:page' object_list.next_page_number current_category %}
+                               href="{% if products.has_next %}
+{% url 'products:page' products.next_page_number current_category %}
 {% else %} # {% endif %}">Next</a>
                         </li>
                     </ul>
