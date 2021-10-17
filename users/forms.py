@@ -3,7 +3,7 @@ from random import random
 
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
-from users.models import User
+from users.models import User, UserProfile
 
 
 class UserLoginForm (AuthenticationForm):
@@ -73,9 +73,24 @@ class UserProfileForm(UserChangeForm):
             field.widget.attrs['class'] = 'form-control py-4'
         self.fields['image'].widget.attrs['class'] = 'custom-file-input'
 
-    def clean_image(self):
-        data = self.cleaned_data['image']
-        if data:
-            if data.size > 1024*1024:
-                raise forms.ValidationError('Файл слишком большой')
-        return data
+    # def clean_image(self):
+    #     data = self.cleaned_data['image']
+    #     if data:
+    #         if data.size > 1024*1024:
+    #             raise forms.ValidationError('Файл слишком большой')
+    #     return data
+
+class UserProfileEditForm(forms.ModelForm):
+
+    class Meta:
+        model = UserProfile
+        fields = ('tagline', 'about', 'gender')
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileEditForm, self).__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            if field_name != 'gender':
+                field.widget.attrs['class'] = 'form-control py-4'
+            else:
+                field.widget.attrs['class'] = 'form-control'
