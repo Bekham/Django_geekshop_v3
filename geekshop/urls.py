@@ -22,10 +22,13 @@ from django.conf.urls import include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', mainapp.index, name='index'),
+    path('', mainapp.IndexView.as_view(), name='index'),
     path('products/', include('mainapp.urls', namespace='products')),
     path('users/', include('users.urls', namespace='users')),
     path('baskets/', include('baskets.urls', namespace='baskets')),
+    path('admins/', include('admins.urls', namespace='admins')),
+    path('', include('social_django.urls', namespace='social')),
+
 ]
 
 if settings.DEBUG:

@@ -5,7 +5,7 @@
 <html lang="en">
 
 <head>
-
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -38,7 +38,7 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
 
-                    <a class="nav-link" href="{% url 'products:index' %}">Каталог</a>
+                    <a class="nav-link" href="{% url 'products:product' %}">Каталог</a>
 
 
                 </li>
@@ -48,9 +48,16 @@
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:profile' %}">User
+                        <a class="nav-link" href="{% url 'users:profile' %}">{{ user.username }}
                             <i class="fas fa-user-circle"></i>
                         </a>
+                    </li>
+                    <li class="nav-item">
+                    {% if user.is_superuser %}
+                        <a class="nav-link" href="{% url 'admins:admin' %}">
+                            <i class="fas fa-user-cog"></i>
+                        </a>
+                        {% endif %}
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'users:logout' %}">Выйти <i
@@ -77,8 +84,12 @@
 
 <!-- FontAwesome script -->
 <script src="{% static 'vendor/fontawesome/fontawesome-icons.js' %}" crossorigin="anonymous"></script>
-<script src="{% static 'js/baskets.js' %}" crossorigin="anonymous"></script>
-<script src="{% static 'js/product_add.js' %}" crossorigin="anonymous"></script>
+{#<script src="{% static 'js/baskets.js' %}" ></script>#}
+{% block baskets %}
+{% endblock %}
+{% block product_add %}
+{% endblock %}
+{#<script src="{% static 'js/product_add.js' %}" ></script>#}
 </body>
 
 </html>
