@@ -24,7 +24,12 @@
                     <div class="card-footer text-center">
                         <input type="button"
                                name="{{ product.id }}"
-                               id="{{ products.object_list }}"
+                               {% if products.object_list %}
+                               id = "{{ products.object_list }}"
+                                   {% else %}
+                               id = "{{ new_products_list }}"
+{% endif %}
+
 {#                                {% for basket in new_baskets %}#}
 {#                                    {% ifequal product.id basket.product_id %}#}
 {#                               value="Удалить из корзины"#}

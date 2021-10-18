@@ -1,6 +1,6 @@
-import json
 
-from django.contrib.auth.decorators import login_required
+from itertools import chain
+
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
@@ -27,40 +27,38 @@ class UserBasketCreateView(CreateView, UserDispatchMixin):
         super().__init__(*args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        if 'product_id' in kwargs:
-            fromAjax = request.POST['page_id']
-            # products_list = fromAjax[1:-1].split(', ')
-            # page_products = {}
-            # # fromJs = fromJs.encode('utf-8')
-            # for item in products_list:
-            #     page_products_item = Product.objects.find(name=item[9:-9])
-            #
-            #     print(page_products_item)
-
-            # now we can load our JSON from JS
-            # fromJs = json.loads(fromAjax)[0]
-            # products = request.POST.get('page_id')
-            # print(fromJs)
-            # for i in products:
-            #     print(i)
-            product_id = self.kwargs.get('product_id')
-            if product_id:
-                product = Product.objects.get(id=product_id)
-                baskets = Basket.objects.filter(user=request.user, product=product)
-                # if request.is_ajax():
-                if baskets.exists():
-                    basket = baskets.first()
-                    basket.quantity += 1
-                    basket.save()
+        super(UserBasketCreateView, self).get(request, *args, **kwargs)
+        if request.is_ajax():
+            if 'product_id' in kwargs:
+                print(request.POST)
+                if request.POST['page_id']:
+                    fromAjax = request.POST['page_id']
+                    print(fromAjax)
+                    products_list = fromAjax[1:-1].split(', ')
+                    page_products = Product.objects.none()
+                    print(products_list)
+                    for item in products_list:
+                        item = item.split('Product: ')[1].split(' (')[0]
+                        page_products = list(chain(page_products, Product.objects.filter(name=item)))
                 else:
-                    Basket.objects.create(user=request.user, product=product, quantity=1)
-            context = {
-                'products': Product.objects.all()
-            }
-                    # print(context)
-                    # update['new_baskets'] = Basket.objects.filter(user=request.user)
-            result = render_to_string('include/goods.html', context, request=request)
-            return JsonResponse({'result': result})
+                    page_products = request.POST
+                    fromAjax = request.POST['page_id']
+                product_id = self.kwargs.get('product_id')
+                if product_id:
+                    product = Product.objects.get(id=product_id)
+                    baskets = Basket.objects.filter(user=request.user, product=product)
+                    if baskets.exists():
+                        basket = baskets.first()
+                        basket.quantity += 1
+                        basket.save()
+                    else:
+                        Basket.objects.create(user=request.user, product=product, quantity=1)
+                context = {
+                    'products': page_products,
+                    'new_products_list': fromAjax
+                }
+                result = render_to_string('include/goods.html', context, request=request)
+                return JsonResponse({'result': result})
 
 
 class UserBasketDeleteView (DeleteView, UserDispatchMixin):

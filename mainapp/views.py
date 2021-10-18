@@ -46,10 +46,11 @@ class ProductsListView(UserDispatchMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(ProductsListView, self).get_context_data(**kwargs)
         request = self.request
-        product_all = super(ProductsListView, self).get_queryset()
+        product_all = super(ProductsListView, self).get_queryset().order_by('id')
         category_id = self.kwargs.get('category_id')
         current_category = self.kwargs.get('current_category')
         page = self.kwargs.get('page')
+        print(category_id, current_category)
         if category_id or current_category:
             if category_id:
                 current_category = category_id
