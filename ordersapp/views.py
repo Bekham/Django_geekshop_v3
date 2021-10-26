@@ -2,7 +2,7 @@ from itertools import chain
 
 from django.db import transaction
 from django.forms import inlineformset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
@@ -35,9 +35,9 @@ class OrderCreate(CreateView):
             formset = OrderFormSet(self.request.POST)
         else:
             basket_items = Basket.objects.filter(user=self.request.user)
-            product_items = Product.objects.none()
-            for item in basket_items:
-                product_items = list(chain(product_items, Product.objects.filter(id=(item.product_id))))
+            # product_items = Product.objects.none()
+            # for item in basket_items:
+            #     product_items = list(chain(product_items, Product.objects.filter(id=(item.product_id))))
 
             if basket_items:
                 OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemsForm, extra=basket_items.count())
@@ -46,8 +46,8 @@ class OrderCreate(CreateView):
                 for num, form in enumerate(formset.forms):
                     form.initial['product'] = basket_items[num].product
                     form.initial['quantity'] = basket_items[num].quantity
-                    form.initial['price'] = product_items[num].price
-                basket_items.delete()
+                    form.initial['price'] = basket_items[num].product.price
+                # basket_items.delete()
             else:
                 formset = OrderFormSet()
 
@@ -122,3 +122,12 @@ def order_forming_complete(request, pk):
     order.status = Order.SEND_TO_PROCEED
     order.save()
     return HttpResponseRedirect(reverse('orders:list'))
+
+def get_product_price(request, pk):
+   if request.is_ajax():
+       product = Product.objects.filter(pk=int(pk)).first()
+       if product:
+           return JsonResponse({'price': product.price})
+       else:
+           return JsonResponse({'price': 0})
+
