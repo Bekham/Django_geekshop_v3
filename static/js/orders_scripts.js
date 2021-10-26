@@ -92,10 +92,11 @@ window.onload = function () {
 
        for (var i=0; i < total_forms; i++) {
            order_total_quantity += quantity_arr[i];
-           order_total_cost += quantity_arr[i] * price_arr[i];
+           order_total_price += quantity_arr[i] * price_arr[i];
        }
        $('.order_total_quantity').html(order_total_quantity.toString());
-       $('.order_total_cost').html(Number(order_total_cost.toFixed(2)).toString());
+       $('.order_total_cost').html(order_total_price.toString() + ',00');
+       // $('.order_total_cost').html(Number(order_total_cost.toFixed(2)).toString());
     }
 
 
