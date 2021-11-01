@@ -41,4 +41,11 @@
    40  sudo ln -s /etc/nginx/sites-available/geekshop /etc/nginx/sites-enabled
    41  sudo nginx -t
    42  sudo systemctl restart nginx
+   43  python manage.py show_urls > urls.txt / выгрузка всех url
+   44  python manage.py validate_templates /поиск ошибок
+   45  sudo apt install graphviz / визуализация моделей и связей
+   46  python manage.py graph_models -a -g -o geekshop_visualized.png / визуализация моделей и связей
+   47  sudo apt install siege  / нагрузка по urls
+   48  siege -f urls.txt -d1 -r3 -c1 --debug
+
 
