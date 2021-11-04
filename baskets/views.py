@@ -33,10 +33,10 @@ class UserBasketCreateView(CreateView, UserDispatchMixin):
                 print(request.POST)
                 if request.POST['page_id']:
                     fromAjax = request.POST['page_id']
-                    print(fromAjax)
+                    # print(fromAjax)
                     products_list = fromAjax[1:-1].split(', ')
                     page_products = Product.objects.none()
-                    print(products_list)
+                    # print(products_list)
                     for item in products_list:
                         item = item.split('Product: ')[1].split(' (')[0]
                         page_products = list(chain(page_products, Product.objects.filter(name=item)))
