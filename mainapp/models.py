@@ -1,4 +1,6 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
 
 # Create your models here.
 
@@ -21,6 +23,11 @@ class Product(models.Model):
     quantity = models.PositiveIntegerField(verbose_name='количество на складе', default=0)
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
     is_active = models.BooleanField(verbose_name='активна', default=True)
+    discount = models.IntegerField(verbose_name='скидка',
+                                   validators=[
+                                       MaxValueValidator(90),
+                                       MinValueValidator(0)
+                                   ], default=0)
 
     def __str__(self):
         return f"{self.name} ({self.category.name})"

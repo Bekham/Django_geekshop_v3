@@ -52,7 +52,7 @@ class OrderCreate(CreateView):
                 for num, form in enumerate(formset.forms):
                     form.initial['product'] = basket_items[num].product
                     form.initial['quantity'] = basket_items[num].quantity
-                    form.initial['price'] = basket_items[num].product.price
+                    form.initial['price'] = basket_items[num].product.price * (100 - basket_items[num].product.discount) / 100
                 # basket_items.delete()
             else:
                 formset = OrderFormSet()
@@ -95,7 +95,7 @@ class OrderUpdate(UpdateView):
             formset = OrderFormSet(instance=self.object, queryset=queryset)
             for form in formset:
                 if form.instance.pk:
-                    form.initial['price'] = form.instance.product.price
+                    form.initial['price'] = form.instance.product.price * (100 - form.instance.product.discount )/ 100
         context['orderitems'] = formset
         return context
 
@@ -135,7 +135,11 @@ def get_product_price(request, pk):
    if request.is_ajax():
        product = Product.objects.get(pk=int(pk))
        if product:
-           return JsonResponse({'price': product.price})
+           if product.discount:
+               print('ok')
+               return JsonResponse({'price': product.price * (100 - product.discount) / 100})
+           else:
+               return JsonResponse({'price': product.price})
        else:
            return JsonResponse({'price': 0})
 

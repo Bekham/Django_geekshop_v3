@@ -16,6 +16,7 @@
                                 <th>Имя продукта</th>
                                 <th>Краткое описание продукта</th>
                                 <th>Цена продукта</th>
+                                <th>Скидка</th>
                                 <th>Количество на складе</th>
                                 <th>Категория товара</th>
                                 <th>Активный</th>
@@ -38,6 +39,7 @@
                                        style="color: dodgerblue">{{ product.name }}</a></td>
                                 <td>{{ product.short_desc }}</td>
                                 <td>{{ product.price }}</td>
+                                <td>{{ product.discount }}</td>
                                 <td>{{ product.quantity }}</td>
                                 <td>{% for category in categories %}
                                     {% ifequal category.id product.category_id %}

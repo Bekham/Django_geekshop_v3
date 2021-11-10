@@ -77,7 +77,12 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(verbose_name='количество', default=0)
 
     def get_product_cost(self):
-        return self.product.price * self.quantity
+        if self.product.discount:
+            print('OK')
+            return self.product.price * self.quantity * (100 - self.product.discount) / 100
+        else:
+
+            return self.product.price * self.quantity
 
     @staticmethod
     def get_item(pk):

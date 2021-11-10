@@ -29,17 +29,21 @@ class Basket(models.Model):
         return f'Корзина для {self.user.username} | Продукт {self.product.name}'
 
     def sum(self):
-        return self.quantity * self.product.price
+        if self.product.discount:
+            return self.quantity * self.product.price * (100 - self.product.discount) / 100
+        else:
+            return self.quantity * self.product.price
 
     def total_sum(self):
-        baskets = self.get_items_cached
-        # baskets = Basket.objects.filter(user=self.user)
+        # baskets = self.get_items_cached
+        baskets = Basket.objects.filter(user=self.user)
         return sum(basket.sum() for basket in baskets)
 
     def total_quantity(self):
-        baskets = self.get_items_cached
-        # baskets = Basket.objects.filter(user=self.user)
+        # baskets = self.get_items_cached
+        baskets = Basket.objects.filter(user=self.user)
         return sum(basket.quantity for basket in baskets)
+
 
     # def delete(self, using=None, keep_parents=False):
     #     self.product.quantity += self.quantity

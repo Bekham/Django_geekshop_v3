@@ -13,7 +13,11 @@
                </span>
                 <span class="product_name">{{ item.product.name }}</span>
                 <span class="product_price">
+                    {% if item.product.discount %}
+                    {{ item.get_product_cost  }}&nbspруб
+                    {% else %}
                    {{ item.product.price }}&nbspруб
+                    {% endif %}
                </span>
                 <span class="product_quantitiy">
                    x {{ item.quantity }} шт.

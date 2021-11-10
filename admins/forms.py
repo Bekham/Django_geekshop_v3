@@ -88,12 +88,12 @@ class ProductsAdminProfileForm(forms.ModelForm):
     image = forms.ImageField(widget=forms.FileInput(), required=False)
     class Meta:
         model = Product
-        fields = ('name', 'image', 'short_desc', 'description', 'price', 'quantity', 'image', 'category', 'is_active')
+        fields = ('name', 'image', 'short_desc', 'description', 'price', 'quantity', 'image', 'category', 'is_active', 'discount')
 
     def __init__(self, *args, **kwargs):
         super(ProductsAdminProfileForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            if field_name == 'image' or field_name == 'category' or field_name == 'price' or field_name == 'quantity':
+            if field_name == 'image' or field_name == 'category' or field_name == 'price' or field_name == 'quantity' or field_name == 'discount':
                 field.widget.attrs['class'] = 'form-control'
             elif field_name == 'is_active':
                 field.widget.attrs['class'] = 'form'
