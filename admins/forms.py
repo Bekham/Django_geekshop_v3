@@ -52,6 +52,7 @@ class CategoryAdminRegisterForm(forms.ModelForm):
 
 
 class CategoryAdminProfileForm(forms.ModelForm):
+    discount = forms.IntegerField(widget=forms.NumberInput(), label='скидка', required=False, min_value=0, max_value=90, initial=0)
     class Meta:
         model = ProductCategory
         fields = ('name', 'description', 'is_active')

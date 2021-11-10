@@ -3,7 +3,7 @@ from django.shortcuts import render
 import os
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, DetailView
 
 from geekshop.mixin import UserDispatchMixin
 from mainapp.models import Product, ProductCategory
@@ -153,4 +153,18 @@ class ProductsListView(UserDispatchMixin, ListView):
 #         result = render_to_string('mainapp/goods.html', context)
 #         return JsonResponse({'result': result})
 
+class ProductDetail(DetailView):
+    """
+    Контроллер вывода информации о продукте
+    """
+    model = Product
+    template_name = 'mainapp/product_detail.html'
+    context_object_name = 'product'
 
+
+    def get_context_data(self, category_id=None, *args, **kwargs):
+        """Добавляем список категорий для вывода сайдбара с категориями на странице каталога"""
+        context = super().get_context_data()
+        # context['product'] = Product.objects.filter(pk=self.kwargs.get('pk'))
+        context['categories'] = ProductCategory.objects.all()
+        return context

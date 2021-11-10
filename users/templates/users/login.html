@@ -9,6 +9,7 @@
                     {% if messages %}
                         {% for message in messages %}
                             {{ message }}
+                            <p> Подтвердите Вашу учетную запись! </p>
                         {% endfor %}
                     {% else %}
                         {% for error in form.non_field_errors %}

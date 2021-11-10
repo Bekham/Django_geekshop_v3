@@ -1,6 +1,7 @@
 
 from itertools import chain
 
+from django.db.models import F
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
@@ -49,7 +50,8 @@ class UserBasketCreateView(CreateView, UserDispatchMixin):
                     baskets = Basket.objects.filter(user=request.user, product=product)
                     if baskets.exists():
                         basket = baskets.first()
-                        basket.quantity += 1
+                        basket.quantity = F('quantity') + 1
+                        # basket.quantity += 1
                         basket.save()
                     else:
                         Basket.objects.create(user=request.user, product=product, quantity=1)
