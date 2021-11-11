@@ -1,0 +1,59 @@
+{#<div class="list_update">#}
+<div class="product_add">
+    {#<div class="list-group">#}
+    <div class="row">
+
+        {% for product in products %}
+{#            {% csrf_token %}#}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100">
+                    <a href="#">
+                        <img class="card-img-top"
+                             src="/media/{{ product.image }}" alt="">
+                    </a>
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            <a href="{% url 'products:detail' product.id %}">{{ product.name }}</a>
+                        </h4>
+                        {% if product.discount %}
+                            <h5 class="text-sm-right" style="color: #a41515">Скидка {{ product.discount }}%</h5>
+                        {% endif %}
+                        <h5>{{ product.price }} руб.</h5>
+                        <p class="card-text">
+                            {{ product.description }}
+                        </p>
+                    </div>
+                    <div class="buy_item">
+                    <div class="card-footer text-center">
+                        <input type="button"
+                               name="{{ product.id }}"
+                               {% if products.object_list %}
+                               id = "{{ products.object_list }}"
+                                   {% else %}
+                               id = "{{ new_products_list }}"
+{% endif %}
+
+{#                                {% for basket in new_baskets %}#}
+{#                                    {% ifequal product.id basket.product_id %}#}
+{#                               value="Удалить из корзины"#}
+{#                               class="btn btn-outline-danger"#}
+{#                                    {% endifequal %}#}
+{#                                {% endfor %}#}
+{#                                {% if not value %}#}
+{#                               id="{{ basket.product_id }}"#}
+                               value="Отправить в корзину"
+                               class="btn btn-outline-success"
+{#                                {% endif %}#}
+                        >
+                    </div>
+                        </div>
+                </div>
+            </div>
+
+        {% endfor %}
+    </div>
+
+    {#</div>#}
+</div>
+
+{#</div>#}
